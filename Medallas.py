@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer,Table,Image
+from reportlab.lib.styles import getSampleStyleSheet
 
 def carga_datos(ruta):
     
@@ -147,11 +149,40 @@ def Graficos(df):
     sns.boxplot(x=df['Total'], color='lightgreen')
     plt.title('Medallas Totales')
 
+    plt.savefig("graficos_medallas.png")
+    print("Imagen de GRaficos Guardado como graficos_medallas.png")
+
     plt.tight_layout()
-    plt.show()
+    plt.close()
+
+    return df
 
 
+def generar_pdf(df_datos,nombre_pdf):
+    doc=SimpleDocTemplate(nombre_pdf)
+    estilos=getSampleStyleSheet()
+    elementos=[]
 
+    elementos.append(Paragraph("Reporte de Medallas",estilos['Title']))
+    elementos.append(Spacer(1,12))
+    
+    datos_lista=[df_datos.columns.tolist()]+df_datos.values.tolist()
+    tabla=Table(datos_lista)
+    elementos.append(tabla)
+    elementos.append(Spacer(1,12))
+
+
+    elementos.append(Paragraph("Graficos de Analisis",estilos['Heading2']))
+    imagen = Image("graficos_medallas.png",width=400,height=400)
+    elementos.append(imagen)
+    elementos.append(Spacer(1,12))
+
+    elementos.append(Paragraph("Conclusion",estilos['Heading2']))
+    texto="!El PDF Muestra un pequeño resumen de la medalleria , Informacion relevante ,porcentajes,rendimientos y datos importantes que nos muestra una brecha importante entre paises.! "
+    elementos.append(Paragraph(texto,estilos['Normal']))
+
+    doc.build(elementos)
+    print(f"PDF{nombre_pdf}")
 
 
 def main():
@@ -224,7 +255,35 @@ def main():
     print("\n")
     print ("=======================================")
     print("\n")
-    Graficos(df)
+    #Gráfico de barras → Top 10 países por total de medallas.
+    #Gráfico de barras → Medallas de oro por país.
+    #Histograma → Distribución del total de medallas.
+    #Boxplot → Comparación de medallas totales entre países.
+    df=Graficos(df)
+    print("\n")
+    print ("=======================================")
+    print("\n")
+    #Crear un archivo EXCEL con:
+    #País
+    #Oro
+    #Plata
+    #Bronce
+    #Total_medallas
+    #Nivel_rendimiento
+    columnas_internas=['Pais','Oro','Plata','Bronce','Total','nivel_rendimiento']
+    df_excel=df[columnas_internas]
+
+    df_excel.to_excel("Resumen_Medalleria.xlsx",index=False )
+    print("Archivo Generado ")
+    print("\n")
+    print ("=======================================")
+    print("\n")
+    #Generar un PDF que contenga:
+    #Título
+    #Tabla resumen
+    #gráficos
+    #Conclusión escrita (mínimo 5 líneas)
+    generar_pdf(df_excel,"Medalleria.pdf")
 
     
 
