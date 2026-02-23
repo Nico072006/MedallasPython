@@ -4,6 +4,8 @@ import seaborn as sns
 from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer,Table,Image
 from reportlab.lib.styles import getSampleStyleSheet
 
+
+
 def carga_datos(ruta):
     
     df = pd.read_csv(ruta)
@@ -68,7 +70,6 @@ def Estadisticas_M_M_D(df):
     print(f"Mediana {mediana}")
     print(f"Desviacion {desviacion:.2f}")
 
-
 def Probabilidades(df):
     total_paises =len(df)
 
@@ -86,7 +87,6 @@ def Probabilidades(df):
     Una=len(df[df['Total']>=1])
     Prob_una=(Una/total_paises)*100
     print (f"Probabilidad de tener al menos una medalla: \n{Prob_una:.2f}%")
-
 
 def Posiciones(df):
     # Ordenar por total de medallas (Mayor a Menor)
@@ -109,7 +109,6 @@ def Posiciones(df):
 
     print(f" \n Pais con Menos Medallas")
     print(f"{pais_min} con solo {Can_min} medalla(s).")
-
 
 def Graficos(df):
     #Crear columna de rendimiento ---
@@ -157,7 +156,6 @@ def Graficos(df):
 
     return df
 
-
 def generar_pdf(df_datos,nombre_pdf):
     doc=SimpleDocTemplate(nombre_pdf)
     estilos=getSampleStyleSheet()
@@ -183,7 +181,6 @@ def generar_pdf(df_datos,nombre_pdf):
 
     doc.build(elementos)
     print(f"PDF{nombre_pdf}")
-
 
 def main():
     df = carga_datos("medallas.csv")
@@ -285,7 +282,8 @@ def main():
     #Conclusión escrita (mínimo 5 líneas)
     generar_pdf(df_excel,"Medalleria.pdf")
 
-    
+
+
 
 
 main ()
